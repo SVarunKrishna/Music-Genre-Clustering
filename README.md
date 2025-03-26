@@ -59,18 +59,23 @@ Visualize genre clusters
 TECHNOLOGIES USED:
 
 🚀 Python
+
 📊 Pandas, NumPy – Data processing
+
 🧠 Scikit-Learn – Clustering
+
 📈 Matplotlib, Seaborn, Plotly – Visualization
+
 📂 Jupyter Notebook
+
 
 RESULTS & VISUALIZATION:
 
-2D & 3D plots of clustered genres
+📊 2D & 3D plots of clustered genres
 
-Insights into music patterns
+📈 Insights into music patterns
 
-Interactive exploration of genre similarities
+📊 Interactive exploration of genre similarities
 
 
 CONTRIBUTING:
