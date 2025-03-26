@@ -1,0 +1,12 @@
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+plotly
+papermill
+jsonschema
+jupyter-core
+traitlets
+fastjsonschema
+nbformat
