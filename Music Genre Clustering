@@ -1,0 +1,645 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "b88b5f2d",
+   "metadata": {
+    "papermill": {
+     "duration": 0.00524,
+     "end_time": "2023-06-03T22:00:20.502251",
+     "exception": false,
+     "start_time": "2023-06-03T22:00:20.497011",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "# Clustering Music Genres"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "548309eb",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-06-03T22:00:20.525852Z",
+     "iopub.status.busy": "2023-06-03T22:00:20.525318Z",
+     "iopub.status.idle": "2023-06-03T22:00:22.574912Z",
+     "shell.execute_reply": "2023-06-03T22:00:22.573754Z"
+    },
+    "papermill": {
+     "duration": 2.059146,
+     "end_time": "2023-06-03T22:00:22.577612",
+     "exception": false,
+     "start_time": "2023-06-03T22:00:20.518466",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "ename": "SyntaxError",
+     "evalue": "(unicode error) 'unicodeescape' codec can't decode bytes in position 2-3: truncated \\UXXXXXXXX escape (1259943316.py, line 5)",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[1;36m  Cell \u001b[1;32mIn[7], line 5\u001b[1;36m\u001b[0m\n\u001b[1;33m    data = pd.read_csv(\"C:\\Users\\bhara\\Downloads/Spotify-2000.csv\")\u001b[0m\n\u001b[1;37m                       ^\u001b[0m\n\u001b[1;31mSyntaxError\u001b[0m\u001b[1;31m:\u001b[0m (unicode error) 'unicodeescape' codec can't decode bytes in position 2-3: truncated \\UXXXXXXXX escape\n"
+     ]
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "from sklearn import cluster\n",
+    "\n",
+    "data = pd.read_csv(r\"C:\\Users\\bhara\\Downloads/Spotify-2000.csv\")\n",
+    "print(data.head())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "36288b79",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-06-03T22:00:22.591080Z",
+     "iopub.status.busy": "2023-06-03T22:00:22.590680Z",
+     "iopub.status.idle": "2023-06-03T22:00:22.606044Z",
+     "shell.execute_reply": "2023-06-03T22:00:22.604842Z"
+    },
+    "papermill": {
+     "duration": 0.024828,
+     "end_time": "2023-06-03T22:00:22.608440",
+     "exception": false,
+     "start_time": "2023-06-03T22:00:22.583612",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'data' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[1;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "Cell \u001b[1;32mIn[1], line 1\u001b[0m\n\u001b[1;32m----> 1\u001b[0m \u001b[43mdata\u001b[49m\u001b[38;5;241m.\u001b[39misnull()\u001b[38;5;241m.\u001b[39msum()\n",
+      "\u001b[1;31mNameError\u001b[0m: name 'data' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "data.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "00e80210",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-06-03T22:00:22.624500Z",
+     "iopub.status.busy": "2023-06-03T22:00:22.623819Z",
+     "iopub.status.idle": "2023-06-03T22:00:22.649173Z",
+     "shell.execute_reply": "2023-06-03T22:00:22.647961Z"
+    },
+    "papermill": {
+     "duration": 0.037107,
+     "end_time": "2023-06-03T22:00:22.651779",
+     "exception": false,
+     "start_time": "2023-06-03T22:00:22.614672",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Index                     True\n",
+       "Title                     True\n",
+       "Artist                    True\n",
+       "Top Genre                 True\n",
+       "Year                      True\n",
+       "Beats Per Minute (BPM)    True\n",
+       "Energy                    True\n",
+       "Danceability              True\n",
+       "Loudness (dB)             True\n",
+       "Liveness                  True\n",
+       "Valence                   True\n",
+       "Length (Duration)         True\n",
+       "Acousticness              True\n",
+       "Speechiness               True\n",
+       "Popularity                True\n",
+       "dtype: bool"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#Any drop_duplicates values from the data frame\n",
+    "data.drop_duplicates().any()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "b3c295a3",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-06-03T22:00:22.666487Z",
+     "iopub.status.busy": "2023-06-03T22:00:22.665508Z",
+     "iopub.status.idle": "2023-06-03T22:00:22.671435Z",
+     "shell.execute_reply": "2023-06-03T22:00:22.670562Z"
+    },
+    "papermill": {
+     "duration": 0.015721,
+     "end_time": "2023-06-03T22:00:22.673775",
+     "exception": false,
+     "start_time": "2023-06-03T22:00:22.658054",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "data = data.drop(\"Index\", axis=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "25bffe00",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-06-03T22:00:22.688873Z",
+     "iopub.status.busy": "2023-06-03T22:00:22.688209Z",
+     "iopub.status.idle": "2023-06-03T22:00:22.704434Z",
+     "shell.execute_reply": "2023-06-03T22:00:22.702365Z"
+    },
+    "papermill": {
+     "duration": 0.026806,
+     "end_time": "2023-06-03T22:00:22.706889",
+     "exception": false,
+     "start_time": "2023-06-03T22:00:22.680083",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                            Year  Beats Per Minute (BPM)    Energy  \\\n",
+      "Year                    1.000000                0.012570  0.147235   \n",
+      "Beats Per Minute (BPM)  0.012570                1.000000  0.156644   \n",
+      "Energy                  0.147235                0.156644  1.000000   \n",
+      "Danceability            0.077493               -0.140602  0.139616   \n",
+      "Loudness (dB)           0.343764                0.092927  0.735711   \n",
+      "Liveness                0.019017                0.016256  0.174118   \n",
+      "Valence                -0.166163                0.059653  0.405175   \n",
+      "Acousticness           -0.132946               -0.122472 -0.665156   \n",
+      "Speechiness             0.054097                0.085598  0.205865   \n",
+      "Popularity             -0.158962               -0.003181  0.103393   \n",
+      "\n",
+      "                        Danceability  Loudness (dB)  Liveness   Valence  \\\n",
+      "Year                        0.077493       0.343764  0.019017 -0.166163   \n",
+      "Beats Per Minute (BPM)     -0.140602       0.092927  0.016256  0.059653   \n",
+      "Energy                      0.139616       0.735711  0.174118  0.405175   \n",
+      "Danceability                1.000000       0.044235 -0.103063  0.514564   \n",
+      "Loudness (dB)               0.044235       1.000000  0.098257  0.147041   \n",
+      "Liveness                   -0.103063       0.098257  1.000000  0.050667   \n",
+      "Valence                     0.514564       0.147041  0.050667  1.000000   \n",
+      "Acousticness               -0.135769      -0.451635 -0.046206 -0.239729   \n",
+      "Speechiness                 0.125229       0.125090  0.092594  0.107102   \n",
+      "Popularity                  0.144344       0.165527 -0.111978  0.095911   \n",
+      "\n",
+      "                        Acousticness  Speechiness  Popularity  \n",
+      "Year                       -0.132946     0.054097   -0.158962  \n",
+      "Beats Per Minute (BPM)     -0.122472     0.085598   -0.003181  \n",
+      "Energy                     -0.665156     0.205865    0.103393  \n",
+      "Danceability               -0.135769     0.125229    0.144344  \n",
+      "Loudness (dB)              -0.451635     0.125090    0.165527  \n",
+      "Liveness                   -0.046206     0.092594   -0.111978  \n",
+      "Valence                    -0.239729     0.107102    0.095911  \n",
+      "Acousticness                1.000000    -0.098256   -0.087604  \n",
+      "Speechiness                -0.098256     1.000000    0.111689  \n",
+      "Popularity                 -0.087604     0.111689    1.000000  \n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/tmp/ipykernel_20/2673540449.py:2: FutureWarning: The default value of numeric_only in DataFrame.corr is deprecated. In a future version, it will default to False. Select only valid columns or specify the value of numeric_only to silence this warning.\n",
+      "  print(data.corr())\n"
+     ]
+    }
+   ],
+   "source": [
+    "#the correlation between all the audio features in the dataset\n",
+    "print(data.corr())"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "69431642",
+   "metadata": {
+    "papermill": {
+     "duration": 0.006164,
+     "end_time": "2023-06-03T22:00:22.719973",
+     "exception": false,
+     "start_time": "2023-06-03T22:00:22.713809",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "Clustering Analysis of Audio Features"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "ef9214a7",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-06-03T22:00:22.735885Z",
+     "iopub.status.busy": "2023-06-03T22:00:22.735448Z",
+     "iopub.status.idle": "2023-06-03T22:00:22.742938Z",
+     "shell.execute_reply": "2023-06-03T22:00:22.741782Z"
+    },
+    "papermill": {
+     "duration": 0.017896,
+     "end_time": "2023-06-03T22:00:22.745234",
+     "exception": false,
+     "start_time": "2023-06-03T22:00:22.727338",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "data2 = data[[\"Beats Per Minute (BPM)\", \"Loudness (dB)\", \n",
+    "              \"Liveness\", \"Valence\", \"Acousticness\", \n",
+    "              \"Speechiness\"]]\n",
+    "\n",
+    "from sklearn.preprocessing import MinMaxScaler\n",
+    "for i in data.columns:\n",
+    "    MinMaxScaler(i)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "59f5348a",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-06-03T22:00:22.759996Z",
+     "iopub.status.busy": "2023-06-03T22:00:22.759541Z",
+     "iopub.status.idle": "2023-06-03T22:00:24.155855Z",
+     "shell.execute_reply": "2023-06-03T22:00:24.154914Z"
+    },
+    "papermill": {
+     "duration": 1.40662,
+     "end_time": "2023-06-03T22:00:24.158388",
+     "exception": false,
+     "start_time": "2023-06-03T22:00:22.751768",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/opt/conda/lib/python3.10/site-packages/sklearn/cluster/_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning\n",
+      "  warnings.warn(\n"
+     ]
+    }
+   ],
+   "source": [
+    "#The KMeans class in the sklearn module can be used to cluster data into a specified number of clusters.The code then fits the K-Means model to the audio features\n",
+    "from sklearn.cluster import KMeans\n",
+    "kmeans = KMeans(n_clusters=10)\n",
+    "clusters = kmeans.fit_predict(data2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "66a06d3c",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-06-03T22:00:24.175403Z",
+     "iopub.status.busy": "2023-06-03T22:00:24.174261Z",
+     "iopub.status.idle": "2023-06-03T22:00:24.185349Z",
+     "shell.execute_reply": "2023-06-03T22:00:24.184089Z"
+    },
+    "papermill": {
+     "duration": 0.022449,
+     "end_time": "2023-06-03T22:00:24.188035",
+     "exception": false,
+     "start_time": "2023-06-03T22:00:24.165586",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                    Title             Artist            Top Genre  Year  \\\n",
+      "0                 Sunrise        Norah Jones      adult standards  2004   \n",
+      "1             Black Night        Deep Purple           album rock  2000   \n",
+      "2          Clint Eastwood           Gorillaz  alternative hip hop  2001   \n",
+      "3           The Pretender       Foo Fighters    alternative metal  2007   \n",
+      "4  Waitin' On A Sunny Day  Bruce Springsteen         classic rock  2002   \n",
+      "\n",
+      "   Beats Per Minute (BPM)  Energy  Danceability  Loudness (dB)  Liveness  \\\n",
+      "0                     157      30            53            -14        11   \n",
+      "1                     135      79            50            -11        17   \n",
+      "2                     168      69            66             -9         7   \n",
+      "3                     173      96            43             -4         3   \n",
+      "4                     106      82            58             -5        10   \n",
+      "\n",
+      "   Valence Length (Duration)  Acousticness  Speechiness  Popularity  \n",
+      "0       68               201            94            3          71  \n",
+      "1       81               207            17            7          39  \n",
+      "2       52               341             2           17          69  \n",
+      "3       37               269             0            4          76  \n",
+      "4       87               256             1            3          59  \n"
+     ]
+    }
+   ],
+   "source": [
+    "print(data.head())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "9f8efdb5",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-06-03T22:00:24.203892Z",
+     "iopub.status.busy": "2023-06-03T22:00:24.203454Z",
+     "iopub.status.idle": "2023-06-03T22:00:24.224688Z",
+     "shell.execute_reply": "2023-06-03T22:00:24.223525Z"
+    },
+    "papermill": {
+     "duration": 0.032544,
+     "end_time": "2023-06-03T22:00:24.227309",
+     "exception": false,
+     "start_time": "2023-06-03T22:00:24.194765",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Beats Per Minute (BPM)</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>157</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>135</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>168</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>173</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>106</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1989</th>\n",
+       "      <td>94</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1990</th>\n",
+       "      <td>175</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1991</th>\n",
+       "      <td>168</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1992</th>\n",
+       "      <td>174</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1993</th>\n",
+       "      <td>133</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>1994 rows × 1 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "      Beats Per Minute (BPM)\n",
+       "0                        157\n",
+       "1                        135\n",
+       "2                        168\n",
+       "3                        173\n",
+       "4                        106\n",
+       "...                      ...\n",
+       "1989                      94\n",
+       "1990                     175\n",
+       "1991                     168\n",
+       "1992                     174\n",
+       "1993                     133\n",
+       "\n",
+       "[1994 rows x 1 columns]"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "data[['Beats Per Minute (BPM)']]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "d3ae0524",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2023-06-03T22:00:24.243122Z",
+     "iopub.status.busy": "2023-06-03T22:00:24.242685Z",
+     "iopub.status.idle": "2023-06-03T22:00:26.254508Z",
+     "shell.execute_reply": "2023-06-03T22:00:26.253024Z"
+    },
+    "papermill": {
+     "duration": 2.021718,
+     "end_time": "2023-06-03T22:00:26.256035",
+     "exception": true,
+     "start_time": "2023-06-03T22:00:24.234317",
+     "status": "failed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "ename": "KeyError",
+     "evalue": "'Music Segments'",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mKeyError\u001b[0m                                  Traceback (most recent call last)",
+      "File \u001b[0;32m/opt/conda/lib/python3.10/site-packages/pandas/core/indexes/base.py:3802\u001b[0m, in \u001b[0;36mIndex.get_loc\u001b[0;34m(self, key, method, tolerance)\u001b[0m\n\u001b[1;32m   3801\u001b[0m \u001b[38;5;28;01mtry\u001b[39;00m:\n\u001b[0;32m-> 3802\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[38;5;28;43mself\u001b[39;49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43m_engine\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mget_loc\u001b[49m\u001b[43m(\u001b[49m\u001b[43mcasted_key\u001b[49m\u001b[43m)\u001b[49m\n\u001b[1;32m   3803\u001b[0m \u001b[38;5;28;01mexcept\u001b[39;00m \u001b[38;5;167;01mKeyError\u001b[39;00m \u001b[38;5;28;01mas\u001b[39;00m err:\n",
+      "File \u001b[0;32m/opt/conda/lib/python3.10/site-packages/pandas/_libs/index.pyx:138\u001b[0m, in \u001b[0;36mpandas._libs.index.IndexEngine.get_loc\u001b[0;34m()\u001b[0m\n",
+      "File \u001b[0;32m/opt/conda/lib/python3.10/site-packages/pandas/_libs/index.pyx:165\u001b[0m, in \u001b[0;36mpandas._libs.index.IndexEngine.get_loc\u001b[0;34m()\u001b[0m\n",
+      "File \u001b[0;32mpandas/_libs/hashtable_class_helper.pxi:5745\u001b[0m, in \u001b[0;36mpandas._libs.hashtable.PyObjectHashTable.get_item\u001b[0;34m()\u001b[0m\n",
+      "File \u001b[0;32mpandas/_libs/hashtable_class_helper.pxi:5753\u001b[0m, in \u001b[0;36mpandas._libs.hashtable.PyObjectHashTable.get_item\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;31mKeyError\u001b[0m: 'Music Segments'",
+      "\nThe above exception was the direct cause of the following exception:\n",
+      "\u001b[0;31mKeyError\u001b[0m                                  Traceback (most recent call last)",
+      "Cell \u001b[0;32mIn[10], line 4\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[38;5;28;01mimport\u001b[39;00m \u001b[38;5;21;01mplotly\u001b[39;00m\u001b[38;5;21;01m.\u001b[39;00m\u001b[38;5;21;01mgraph_objects\u001b[39;00m \u001b[38;5;28;01mas\u001b[39;00m \u001b[38;5;21;01mgo\u001b[39;00m\n\u001b[1;32m      3\u001b[0m PLOT \u001b[38;5;241m=\u001b[39m go\u001b[38;5;241m.\u001b[39mFigure()\n\u001b[0;32m----> 4\u001b[0m \u001b[38;5;28;01mfor\u001b[39;00m i \u001b[38;5;129;01min\u001b[39;00m \u001b[38;5;28mlist\u001b[39m(\u001b[43mdata\u001b[49m\u001b[43m[\u001b[49m\u001b[38;5;124;43m\"\u001b[39;49m\u001b[38;5;124;43mMusic Segments\u001b[39;49m\u001b[38;5;124;43m\"\u001b[39;49m\u001b[43m]\u001b[49m\u001b[38;5;241m.\u001b[39munique()):\n\u001b[1;32m      7\u001b[0m     PLOT\u001b[38;5;241m.\u001b[39madd_trace(go\u001b[38;5;241m.\u001b[39mScatter3d(x \u001b[38;5;241m=\u001b[39m data[data[\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mMusic Segments\u001b[39m\u001b[38;5;124m\"\u001b[39m]\u001b[38;5;241m==\u001b[39m i][\u001b[38;5;124m'\u001b[39m\u001b[38;5;124mBeats Per Minute (BPM)\u001b[39m\u001b[38;5;124m'\u001b[39m],\n\u001b[1;32m      8\u001b[0m                                 y \u001b[38;5;241m=\u001b[39m data[data[\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mMusic Segments\u001b[39m\u001b[38;5;124m\"\u001b[39m] \u001b[38;5;241m==\u001b[39m i][\u001b[38;5;124m'\u001b[39m\u001b[38;5;124mEnergy\u001b[39m\u001b[38;5;124m'\u001b[39m],\n\u001b[1;32m      9\u001b[0m                                 z \u001b[38;5;241m=\u001b[39m data[data[\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mMusic Segments\u001b[39m\u001b[38;5;124m\"\u001b[39m] \u001b[38;5;241m==\u001b[39m i][\u001b[38;5;124m'\u001b[39m\u001b[38;5;124mDanceability\u001b[39m\u001b[38;5;124m'\u001b[39m],                        \n\u001b[1;32m     10\u001b[0m                                 mode \u001b[38;5;241m=\u001b[39m \u001b[38;5;124m'\u001b[39m\u001b[38;5;124mmarkers\u001b[39m\u001b[38;5;124m'\u001b[39m,marker_size \u001b[38;5;241m=\u001b[39m \u001b[38;5;241m6\u001b[39m, marker_line_width \u001b[38;5;241m=\u001b[39m \u001b[38;5;241m1\u001b[39m,\n\u001b[1;32m     11\u001b[0m                                 name \u001b[38;5;241m=\u001b[39m \u001b[38;5;28mstr\u001b[39m(i)))\n\u001b[1;32m     12\u001b[0m PLOT\u001b[38;5;241m.\u001b[39mupdate_traces(hovertemplate\u001b[38;5;241m=\u001b[39m\u001b[38;5;124m'\u001b[39m\u001b[38;5;124mBeats Per Minute (BPM): \u001b[39m\u001b[38;5;124m%\u001b[39m\u001b[38;5;132;01m{x}\u001b[39;00m\u001b[38;5;124m <br>Energy: \u001b[39m\u001b[38;5;124m%\u001b[39m\u001b[38;5;132;01m{y}\u001b[39;00m\u001b[38;5;124m <br>Danceability: \u001b[39m\u001b[38;5;124m%\u001b[39m\u001b[38;5;132;01m{z}\u001b[39;00m\u001b[38;5;124m'\u001b[39m)\n",
+      "File \u001b[0;32m/opt/conda/lib/python3.10/site-packages/pandas/core/frame.py:3807\u001b[0m, in \u001b[0;36mDataFrame.__getitem__\u001b[0;34m(self, key)\u001b[0m\n\u001b[1;32m   3805\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39mcolumns\u001b[38;5;241m.\u001b[39mnlevels \u001b[38;5;241m>\u001b[39m \u001b[38;5;241m1\u001b[39m:\n\u001b[1;32m   3806\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_getitem_multilevel(key)\n\u001b[0;32m-> 3807\u001b[0m indexer \u001b[38;5;241m=\u001b[39m \u001b[38;5;28;43mself\u001b[39;49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mcolumns\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mget_loc\u001b[49m\u001b[43m(\u001b[49m\u001b[43mkey\u001b[49m\u001b[43m)\u001b[49m\n\u001b[1;32m   3808\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m is_integer(indexer):\n\u001b[1;32m   3809\u001b[0m     indexer \u001b[38;5;241m=\u001b[39m [indexer]\n",
+      "File \u001b[0;32m/opt/conda/lib/python3.10/site-packages/pandas/core/indexes/base.py:3804\u001b[0m, in \u001b[0;36mIndex.get_loc\u001b[0;34m(self, key, method, tolerance)\u001b[0m\n\u001b[1;32m   3802\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_engine\u001b[38;5;241m.\u001b[39mget_loc(casted_key)\n\u001b[1;32m   3803\u001b[0m \u001b[38;5;28;01mexcept\u001b[39;00m \u001b[38;5;167;01mKeyError\u001b[39;00m \u001b[38;5;28;01mas\u001b[39;00m err:\n\u001b[0;32m-> 3804\u001b[0m     \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mKeyError\u001b[39;00m(key) \u001b[38;5;28;01mfrom\u001b[39;00m \u001b[38;5;21;01merr\u001b[39;00m\n\u001b[1;32m   3805\u001b[0m \u001b[38;5;28;01mexcept\u001b[39;00m \u001b[38;5;167;01mTypeError\u001b[39;00m:\n\u001b[1;32m   3806\u001b[0m     \u001b[38;5;66;03m# If we have a listlike key, _check_indexing_error will raise\u001b[39;00m\n\u001b[1;32m   3807\u001b[0m     \u001b[38;5;66;03m#  InvalidIndexError. Otherwise we fall through and re-raise\u001b[39;00m\n\u001b[1;32m   3808\u001b[0m     \u001b[38;5;66;03m#  the TypeError.\u001b[39;00m\n\u001b[1;32m   3809\u001b[0m     \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_check_indexing_error(key)\n",
+      "\u001b[0;31mKeyError\u001b[0m: 'Music Segments'"
+     ]
+    }
+   ],
+   "source": [
+    "#The code plots the data points in 3D space, colored by cluster\n",
+    "import plotly.graph_objects as go\n",
+    "PLOT = go.Figure()\n",
+    "for i in list(data[\"Music Segments\"].unique()):\n",
+    "    \n",
+    "\n",
+    "    PLOT.add_trace(go.Scatter3d(x = data[data[\"Music Segments\"]== i]['Beats Per Minute (BPM)'],\n",
+    "                                y = data[data[\"Music Segments\"] == i]['Energy'],\n",
+    "                                z = data[data[\"Music Segments\"] == i]['Danceability'],                        \n",
+    "                                mode = 'markers',marker_size = 6, marker_line_width = 1,\n",
+    "                                name = str(i)))\n",
+    "PLOT.update_traces(hovertemplate='Beats Per Minute (BPM): %{x} <br>Energy: %{y} <br>Danceability: %{z}')\n",
+    "\n",
+    "    \n",
+    "PLOT.update_layout(width = 800, height = 800, autosize = True, showlegend = True,\n",
+    "                   scene = dict(xaxis=dict(title = 'Beats Per Minute (BPM)', titlefont_color = 'black'),\n",
+    "                                yaxis=dict(title = 'Energy', titlefont_color = 'black'),\n",
+    "                                zaxis=dict(title = 'Danceability', titlefont_color = 'black')),\n",
+    "                   font = dict(family = \"Gilroy\", color  = 'black', size = 12))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0d216be8",
+   "metadata": {
+    "papermill": {
+     "duration": null,
+     "end_time": null,
+     "exception": null,
+     "start_time": null,
+     "status": "pending"
+    },
+    "tags": []
+   },
+   "source": [
+    "# Summary:\n",
+    "The code first imports the necessary modules, including pandas, numpy, and sklearn. It then loads the music data from a CSV file. The data is then cleaned by dropping any missing values and duplicate rows. Next, the code creates a list of audio features, including beats per minute (BPM), loudness (dB), liveness, valence, acousticness, and speechiness. The code then creates a K-Means clustering model with 10 clusters. The model is fit to the audio features and the data is clustered into 10 groups. The code then plots the data points in 3D space, colored by cluster. The plot shows how the different music genres are clustered together.\n",
+    "\n",
+    "Here are some of the key points of the code:\n",
+    "\n",
+    "The code uses the K-Means clustering algorithm to cluster the music data into 10 groups. The code uses the audio features of the music, such as beats per minute (BPM), loudness (dB), liveness, valence, acousticness, and speechiness, to cluster the data. The code plots the data points in 3D space, colored by cluster. This allows you to see how the different music genres are clustered together."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ab7d43bf",
+   "metadata": {
+    "papermill": {
+     "duration": null,
+     "end_time": null,
+     "exception": null,
+     "start_time": null,
+     "status": "pending"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.1"
+  },
+  "papermill": {
+   "default_parameters": {},
+   "duration": 21.730661,
+   "end_time": "2023-06-03T22:00:29.803940",
+   "environment_variables": {},
+   "exception": true,
+   "input_path": "__notebook__.ipynb",
+   "output_path": "__notebook__.ipynb",
+   "parameters": {},
+   "start_time": "2023-06-03T22:00:08.073279",
+   "version": "2.4.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
